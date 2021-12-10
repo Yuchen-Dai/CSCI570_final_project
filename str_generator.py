@@ -12,7 +12,7 @@ def generate(length):
 
 
 if __name__ == '__main__':
-    basic_length = 500
+    basic_length = 50
     for i in range(1, 16):
         length = basic_length * i
         s1 = generate(basic_length*i)
