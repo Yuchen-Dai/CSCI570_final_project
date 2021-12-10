@@ -106,23 +106,21 @@ def DivideAndConquerAlignment(str1, str2):
     y = ""
     m = len(str1) + 1
     n = len(str2) + 1
-    #if (m == 0) | (n == 0):
+    mid = int(n/2)
 
     if (m <= 2) | (n <= 2):
         x,y = Alignment(str1, str2)
 
     else:
-        f = SpaceEfficientAlignment(str1, str2[0:int(n/2)])
-        g = SpaceEfficientAlignment(str1[::-1], str2[int(n/2):n][::-1])
+        f = SpaceEfficientAlignment(str1, str2[0:mid])
+        g = SpaceEfficientAlignment(str1[::-1], str2[mid:n][::-1])
         #g = BackwardSpaceEfficientAlignment(str1, str2[int(n / 2) + 1:n])
 
         sum_score = f[:,1] + g[:,1][::-1]
-        min_score = min(sum_score)
-        #print(sum_score)
-        q = list(sum_score).index(min_score)
+        q = list(sum_score).index(min(sum_score))
 
-        left = DivideAndConquerAlignment(str1[0 : q], str2[0 : int(n/2)])
-        right = DivideAndConquerAlignment(str1[q : m], str2[int(n/2)  : n])
+        left = DivideAndConquerAlignment(str1[0 : q], str2[0 : mid])
+        right = DivideAndConquerAlignment(str1[q : m], str2[mid  : n])
 
         x = left[0] + right[0]
         y = left[1] + right[1]
@@ -138,7 +136,7 @@ def calc_cost(str1, str2):
     return cost
 
 if __name__ == '__main__':
-    s1, s2 = preprocess('input3.txt')
+    s1, s2 = preprocess('input.txt')
     print(s1)
     print(s2)
     result = DivideAndConquerAlignment(s1, s2)
