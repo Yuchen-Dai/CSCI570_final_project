@@ -39,8 +39,7 @@ def preprocess(file_name):
     return str1, str2
 
 
-def Alignment(str1, str2):
-
+def algorithm1(str1, str2):
     m = len(str1) + 1
     n = len(str2) + 1
     A = np.zeros((m, n), dtype='int64')
@@ -72,59 +71,21 @@ def Alignment(str1, str2):
             op2 = str2[j - 1] + op2
             j -= 1
 
-    return op1, op2
+    return A[-1, -1], op1, op2
 
 
-def SpaceEfficientAlignment(str1, str2):
+def algorithm2(str1, str2):
     m = len(str1) + 1
     n = len(str2) + 1
     B = np.zeros((m, 2))
     B[:, 0] = np.arange(m) * delta
     for j in range(1, n):
         B[0, 1] = j * delta
-        for i in range(1, m):
-            B[i, 1] = min(get_alpha(str1[i-1], str2[j-1]) + B[i - 1, 0], delta + B[i - 1, 1], delta + B[i, 0])
+        for i in range(m):
+            B[i, 1] = min(get_alpha(str1[i - 1], str2[j - 1]) + B[i - 1, 0], delta + B[i - 1, 1], delta + B[i, 0])
         B[:, 0] = B[:, 1]
     return B
 
-"""
-def BackwardSpaceEfficientAlignment(str1, str2):
-    m = len(str1) + 1
-    n = len(str2) + 1
-    B = np.zeros((m, 2))
-    B[:, 0] = np.arange(m) * delta
-    for j in range(1,n):
-        B[0, 1] = j * delta
-        for i in range(1,m):
-            B[i, 1] = min(get_alpha(str1[n-i], str2[m-j]) + B[i - 1, 0], delta + B[i-1, 1], delta + B[i, 0])
-        B[:, 0] = B[:, 1]
-    return B
-"""
-
-def DivideAndConquerAlignment(str1, str2):
-    x = ""
-    y = ""
-    m = len(str1) + 1
-    n = len(str2) + 1
-    mid = int(n/2)
-
-    if (m <= 2) | (n <= 2):
-        x,y = Alignment(str1, str2)
-
-    else:
-        f = SpaceEfficientAlignment(str1, str2[0:mid])
-        g = SpaceEfficientAlignment(str1[::-1], str2[mid:n][::-1])
-        #g = BackwardSpaceEfficientAlignment(str1, str2[int(n / 2) + 1:n])
-
-        sum_score = f[:,1] + g[:,1][::-1]
-        q = list(sum_score).index(min(sum_score))
-
-        left = DivideAndConquerAlignment(str1[0 : q], str2[0 : mid])
-        right = DivideAndConquerAlignment(str1[q : m], str2[mid  : n])
-
-        x = left[0] + right[0]
-        y = left[1] + right[1]
-    return x,y
 
 def calc_cost(str1, str2):
     cost = 0
@@ -135,11 +96,12 @@ def calc_cost(str1, str2):
             cost += get_alpha(str1[i], str2[i])
     return cost
 
+
 if __name__ == '__main__':
-    s1, s2 = preprocess('input.txt')
+    s1, s2 = preprocess('0.txt')
     print(s1)
     print(s2)
-    result = DivideAndConquerAlignment(s1, s2)
+    result = algorithm1(s1, s2)
     print(result[0])
     print(result[1])
-    print(calc_cost(result[0], result[1]))
+    print(result[2])
